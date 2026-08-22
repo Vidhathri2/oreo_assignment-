@@ -14,4 +14,7 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
     
     // Check if a specific book is currently borrowed by a specific user
     Optional<BorrowRecord> findByBookIdAndBorrowerIdAndReturnDateIsNull(Long bookId, Long borrowerId);
+
+    // Get recent transactions
+    List<BorrowRecord> findTop10ByOrderByIdDesc();
 }

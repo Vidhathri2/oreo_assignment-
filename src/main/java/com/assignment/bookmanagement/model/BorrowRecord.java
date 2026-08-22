@@ -1,10 +1,8 @@
 package com.assignment.bookmanagement.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDate;
 
-@Data
 @Entity
 @Table(name = "borrow_records")
 public class BorrowRecord {
@@ -24,4 +22,15 @@ public class BorrowRecord {
     private LocalDate borrowDate;
 
     private LocalDate returnDate;
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Book getBook() { return book; }
+    public void setBook(Book book) { this.book = book; }
+    public Borrower getBorrower() { return borrower; }
+    public void setBorrower(Borrower borrower) { this.borrower = borrower; }
+    public LocalDate getBorrowDate() { return borrowDate; }
+    public void setBorrowDate(LocalDate borrowDate) { this.borrowDate = borrowDate; }
+    public LocalDate getReturnDate() { return returnDate; }
+    public void setReturnDate(LocalDate returnDate) { this.returnDate = returnDate; }
 }
