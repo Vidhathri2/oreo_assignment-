@@ -16,5 +16,5 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
     Optional<BorrowRecord> findByBookIdAndBorrowerIdAndReturnDateIsNull(Long bookId, Long borrowerId);
 
     // Get recent transactions
-    List<BorrowRecord> findTop10ByOrderByIdDesc();
+    List<BorrowRecord> findTop10ByOrderByUpdatedAtDesc();
 }

@@ -27,17 +27,17 @@ function setupNavigation() {
             e.preventDefault();
             navItems.forEach(n => n.classList.remove('active'));
             item.classList.add('active');
-            
+
             views.forEach(v => v.classList.remove('active'));
             const viewId = item.getAttribute('data-view');
             const targetView = document.getElementById(`view-${viewId}`);
-            if(targetView) {
+            if (targetView) {
                 targetView.classList.add('active');
-                if(viewId === 'dashboard') renderDashboard();
-                if(viewId === 'books-list') renderBooksCatalog();
-                if(viewId === 'authors-list') renderAuthorsTable();
-                if(viewId === 'categories-list') renderCategoriesTable();
-                if(viewId === 'borrowers-list') renderBorrowersTable();
+                if (viewId === 'dashboard') renderDashboard();
+                if (viewId === 'books-list') renderBooksCatalog();
+                if (viewId === 'authors-list') renderAuthorsTable();
+                if (viewId === 'categories-list') renderCategoriesTable();
+                if (viewId === 'borrowers-list') renderBorrowersTable();
             }
         });
     });
@@ -48,9 +48,9 @@ function setupNavigation() {
     document.getElementById('addBorrowerForm').addEventListener('submit', handleAddBorrower);
 }
 
-window.switchView = function(viewId) {
+window.switchView = function (viewId) {
     const navItem = document.querySelector(`.nav-item[data-view="${viewId}"]`);
-    if(navItem) navItem.click();
+    if (navItem) navItem.click();
 }
 
 function setupFilters() {
@@ -91,14 +91,14 @@ async function fetchInitialData() {
         if (txRes.ok) state.recentTransactions = await txRes.json();
 
         populateDropdowns();
-        
+
         // Render based on active view
         const activeView = document.querySelector('.view.active').id;
-        if(activeView === 'view-dashboard') renderDashboard();
-        if(activeView === 'view-books-list') renderBooksCatalog();
-        if(activeView === 'view-authors-list') renderAuthorsTable();
-        if(activeView === 'view-categories-list') renderCategoriesTable();
-        if(activeView === 'view-borrowers-list') renderBorrowersTable();
+        if (activeView === 'view-dashboard') renderDashboard();
+        if (activeView === 'view-books-list') renderBooksCatalog();
+        if (activeView === 'view-authors-list') renderAuthorsTable();
+        if (activeView === 'view-categories-list') renderCategoriesTable();
+        if (activeView === 'view-borrowers-list') renderBorrowersTable();
 
     } catch (err) {
         showToast('Error loading data from server', 'error');
@@ -117,15 +117,15 @@ function populateDropdowns() {
     const catOpts = state.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     const borOpts = state.borrowers.map(b => `<option value="${b.id}">${b.name} (${b.email})</option>`).join('');
 
-    if(authorSelect) authorSelect.innerHTML = '<option value="" disabled selected>Select Author</option>' + authorOpts;
-    if(filterAuthor) filterAuthor.innerHTML = '<option value="">All Authors</option>' + authorOpts;
-    
-    if(catSelect) catSelect.innerHTML = '<option value="" disabled selected>Select Category</option>' + catOpts;
-    if(filterCat) filterCat.innerHTML = '<option value="">All Categories</option>' + catOpts;
-    
+    if (authorSelect) authorSelect.innerHTML = '<option value="" disabled selected>Select Author</option>' + authorOpts;
+    if (filterAuthor) filterAuthor.innerHTML = '<option value="">All Authors</option>' + authorOpts;
+
+    if (catSelect) catSelect.innerHTML = '<option value="" disabled selected>Select Category</option>' + catOpts;
+    if (filterCat) filterCat.innerHTML = '<option value="">All Categories</option>' + catOpts;
+
     const borDefault = '<option value="" disabled selected>Select Borrower</option>';
-    if(borrowerSelect) borrowerSelect.innerHTML = borDefault + borOpts;
-    if(returnBorrowerSelect) returnBorrowerSelect.innerHTML = borDefault + borOpts;
+    if (borrowerSelect) borrowerSelect.innerHTML = borDefault + borOpts;
+    if (returnBorrowerSelect) returnBorrowerSelect.innerHTML = borDefault + borOpts;
 }
 
 // Rendering Logic
@@ -158,7 +158,7 @@ function updateStatCards() {
 
 function renderBooksTable(booksToRender, tbodyId) {
     const tbody = document.getElementById(tbodyId);
-    if(!tbody) return;
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     if (booksToRender.length === 0) {
@@ -170,9 +170,9 @@ function renderBooksTable(booksToRender, tbodyId) {
         const isAvailable = book.availableCopies > 0;
         const statusClass = book.availableCopies === 0 ? 'status-borrowed' : (book.availableCopies < 2 ? 'status-low' : 'status-available');
         const statusText = book.availableCopies === 0 ? 'Borrowed Out' : (book.availableCopies < 2 ? 'Low Stock' : 'Available');
-        
+
         const coverUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-S.jpg`;
-        const avatarUrl = `https://ui-avatars.com/api/?name=${book.author.name.replace(' ','+')}&background=random&rounded=true`;
+        const avatarUrl = `https://ui-avatars.com/api/?name=${book.author.name.replace(' ', '+')}&background=random&rounded=true`;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -208,7 +208,7 @@ function renderBooksTable(booksToRender, tbodyId) {
                     <button class="icon-action issue" onclick="openBorrowModal(${book.id}, '${book.title.replace(/'/g, "\\'")}')" title="Issue Book" ${!isAvailable ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>
                         <i class="fa-solid fa-book-open-reader"></i>
                     </button>
-                    <button class="icon-action edit" onclick="openReturnModal(${book.id}, '${book.title.replace(/'/g, "\\'")}')" title="Return Book">
+                    <button class="icon-action edit" onclick="openReturnModal(${book.id}, '${book.title.replace(/'/g, "\\'")}')" title="Return Book" ${book.availableCopies === book.totalCopies ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>
                         <i class="fa-solid fa-rotate-left"></i>
                     </button>
                     <button class="icon-action delete" onclick="deleteBook(${book.id})" title="Delete Book">
@@ -230,12 +230,16 @@ function renderAuthorsTable() {
                 <td>${author.id}</td>
                 <td>
                     <div class="author-cell">
-                        <img src="https://ui-avatars.com/api/?name=${author.name.replace(' ','+')}&background=random" class="author-avatar" alt="Author">
+                        <img src="https://ui-avatars.com/api/?name=${author.name.replace(' ', '+')}&background=random" class="author-avatar" alt="Author">
                         <strong>${author.name}</strong>
                     </div>
                 </td>
                 <td>
-                    <button class="btn btn-outline" style="padding:4px 8px;font-size:12px;">View Books</button>
+                    <div class="action-buttons">
+                        <button class="icon-action delete" onclick="deleteMetadata('authors', ${author.id})" title="Delete Author">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -251,7 +255,11 @@ function renderCategoriesTable() {
                 <td>${cat.id}</td>
                 <td><span class="badge-outline" style="font-size:14px">${cat.name}</span></td>
                 <td>
-                    <button class="btn btn-outline" style="padding:4px 8px;font-size:12px;">View Books</button>
+                    <div class="action-buttons">
+                        <button class="icon-action delete" onclick="deleteMetadata('categories', ${cat.id})" title="Delete Category">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -267,13 +275,17 @@ function renderBorrowersTable() {
                 <td>${b.id}</td>
                 <td>
                     <div class="author-cell">
-                        <img src="https://ui-avatars.com/api/?name=${b.name.replace(' ','+')}&background=random" class="author-avatar" alt="User">
+                        <img src="https://ui-avatars.com/api/?name=${b.name.replace(' ', '+')}&background=random" class="author-avatar" alt="User">
                         <strong>${b.name}</strong>
                     </div>
                 </td>
                 <td>${b.email}</td>
                 <td>
-                    <button class="btn btn-outline" style="padding:4px 8px;font-size:12px;">History</button>
+                    <div class="action-buttons">
+                        <button class="icon-action delete" onclick="deleteMetadata('borrowers', ${b.id})" title="Delete Borrower">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -282,9 +294,9 @@ function renderBorrowersTable() {
 
 function renderRecentTransactions() {
     const list = document.getElementById('recentBorrowersList');
-    if(!list) return;
+    if (!list) return;
     list.innerHTML = '';
-    
+
     if (state.recentTransactions.length === 0) {
         list.innerHTML = '<div class="empty-state">No recent activity</div>';
         return;
@@ -295,18 +307,18 @@ function renderRecentTransactions() {
         const type = isReturn ? 'return' : 'borrow';
         const bookTitle = tx.book.title;
         const borrowerName = tx.borrower.name;
-        
+
         const item = document.createElement('div');
         item.className = 'recent-item';
         item.innerHTML = `
             <div class="recent-user">
-                <img src="https://ui-avatars.com/api/?name=${borrowerName.replace(' ','+')}&background=random" alt="User">
+                <img src="https://ui-avatars.com/api/?name=${borrowerName.replace(' ', '+')}&background=random" alt="User">
                 <div>
                     <h4>${bookTitle}</h4>
                     <p>${isReturn ? 'Returned by' : 'Borrowed by'} ${borrowerName}</p>
                 </div>
             </div>
-            <div class="recent-action">
+            <div class="recent-action" ${!isReturn ? `style="cursor:pointer;" onclick="quickReturn(${tx.book.id}, ${tx.borrower.id})" title="Quick Return Book"` : ''}>
                 <i class="fa-solid ${isReturn ? 'fa-arrow-right-to-bracket' : 'fa-arrow-right-from-bracket'}" style="color: ${isReturn ? 'var(--success)' : 'var(--orange)'}; background: ${isReturn ? 'var(--success-bg)' : 'var(--warning-bg)'}"></i>
             </div>
         `;
@@ -315,7 +327,7 @@ function renderRecentTransactions() {
 }
 
 // Window globally accessible functions
-window.applyFilters = async function() {
+window.applyFilters = async function () {
     const query = document.getElementById('tableSearch').value.trim();
     const catId = document.getElementById('filterCategory').value;
     const authorId = document.getElementById('filterAuthor').value;
@@ -327,7 +339,7 @@ window.applyFilters = async function() {
         try {
             const res = await fetch(`${API_BASE}/books/search?query=${encodeURIComponent(query)}`);
             if (res.ok) filtered = await res.json();
-        } catch(e) {}
+        } catch (e) { }
     }
 
     if (catId) filtered = filtered.filter(b => b.category.id == catId);
@@ -340,7 +352,7 @@ window.applyFilters = async function() {
     renderBooksTable(filtered, 'booksTableBody');
 }
 
-window.resetFilters = function() {
+window.resetFilters = function () {
     document.getElementById('tableSearch').value = '';
     document.getElementById('globalSearch').value = '';
     document.getElementById('filterCategory').value = '';
@@ -349,7 +361,7 @@ window.resetFilters = function() {
     renderBooksTable(state.books, 'booksTableBody');
 }
 
-window.scrollToTableAndHighlight = function() {
+window.scrollToTableAndHighlight = function () {
     const tableContainer = document.querySelector('.dashboard-left');
     if (tableContainer) {
         tableContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -358,18 +370,18 @@ window.scrollToTableAndHighlight = function() {
     }
 }
 
-window.openModal = function(id) {
+window.openModal = function (id) {
     const formMap = {
         'addBookModal': 'addBookForm',
         'addAuthorModal': 'addAuthorForm',
         'addCategoryModal': 'addCategoryForm',
         'addBorrowerModal': 'addBorrowerForm'
     };
-    if(formMap[id]) document.getElementById(formMap[id]).reset();
+    if (formMap[id]) document.getElementById(formMap[id]).reset();
     document.getElementById(id).classList.add('active');
 }
 
-window.closeModal = function(id) {
+window.closeModal = function (id) {
     document.getElementById(id).classList.remove('active');
     state.currentActionBookId = null;
 }
@@ -422,11 +434,11 @@ async function submitForm(url, payload, modalId, successMsg) {
             const err = await res.json();
             showToast(err.error || 'Operation failed', 'error');
         }
-    } catch(err) { showToast('Network error', 'error'); }
+    } catch (err) { showToast('Network error', 'error'); }
 }
 
-window.deleteBook = async function(id) {
-    if(!confirm("Are you sure you want to delete this book?")) return;
+window.deleteBook = async function (id) {
+    if (!confirm("Are you sure you want to delete this book?")) return;
     try {
         const res = await fetch(`${API_BASE}/books/${id}`, { method: 'DELETE' });
         if (res.ok) {
@@ -435,13 +447,13 @@ window.deleteBook = async function(id) {
         } else {
             showToast('Error deleting book', 'error');
         }
-    } catch(e) {}
+    } catch (e) { }
 }
 
-window.openBorrowModal = function(id, title) {
+window.openBorrowModal = function (id, title) {
     state.currentActionBookId = id;
     state.currentActionBookTitle = title;
-    
+
     document.getElementById('borrowBookInfo').innerHTML = `
         <i class="fa-solid fa-book text-purple" style="font-size:24px"></i>
         <div>
@@ -453,10 +465,10 @@ window.openBorrowModal = function(id, title) {
     document.getElementById('borrowModal').classList.add('active');
 }
 
-window.openReturnModal = function(id, title) {
+window.openReturnModal = function (id, title) {
     state.currentActionBookId = id;
     state.currentActionBookTitle = title;
-    
+
     document.getElementById('returnBookInfo').innerHTML = `
         <i class="fa-solid fa-book text-green" style="font-size:24px"></i>
         <div>
@@ -468,9 +480,9 @@ window.openReturnModal = function(id, title) {
     document.getElementById('returnModal').classList.add('active');
 }
 
-window.confirmBorrow = async function() {
+window.confirmBorrow = async function () {
     const borId = document.getElementById('borrowerSelect').value;
-    if(!borId) return showToast('Select a borrower', 'error');
+    if (!borId) return showToast('Select a borrower', 'error');
 
     try {
         const res = await fetch(`${API_BASE}/books/${state.currentActionBookId}/borrow?borrowerId=${borId}`, { method: 'POST' });
@@ -482,12 +494,12 @@ window.confirmBorrow = async function() {
             const err = await res.json();
             showToast(err.error || 'Failed to issue book', 'error');
         }
-    } catch(e) { showToast('Error', 'error'); }
+    } catch (e) { showToast('Error', 'error'); }
 }
 
-window.confirmReturn = async function() {
+window.confirmReturn = async function () {
     const borId = document.getElementById('returnBorrowerSelect').value;
-    if(!borId) return showToast('Select a borrower', 'error');
+    if (!borId) return showToast('Select a borrower', 'error');
 
     try {
         const res = await fetch(`${API_BASE}/books/${state.currentActionBookId}/return?borrowerId=${borId}`, { method: 'POST' });
@@ -499,18 +511,46 @@ window.confirmReturn = async function() {
             const err = await res.json();
             showToast(err.error || 'Failed to return book', 'error');
         }
-    } catch(e) { showToast('Error', 'error'); }
+    } catch (e) { showToast('Error', 'error'); }
+}
+
+window.quickReturn = async function (bookId, borrowerId) {
+    if (!confirm("Process return for this book?")) return;
+    try {
+        const res = await fetch(`${API_BASE}/books/${bookId}/return?borrowerId=${borrowerId}`, { method: 'POST' });
+        if (res.ok) {
+            showToast('Book returned successfully', 'success');
+            fetchInitialData();
+        } else {
+            const err = await res.json();
+            showToast(err.error || 'Failed to return book', 'error');
+        }
+    } catch (e) { showToast('Error', 'error'); }
+}
+
+window.deleteMetadata = async function (type, id) {
+    if (!confirm(`Are you sure you want to delete this ${type.slice(0, -1)}?`)) return;
+    try {
+        const res = await fetch(`${API_BASE}/metadata/${type}/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            showToast(`${type.slice(0, -1)} deleted successfully`, 'success');
+            fetchInitialData();
+        } else {
+            const err = await res.json();
+            showToast(err.error || `Failed to delete ${type.slice(0, -1)}`, 'error');
+        }
+    } catch (e) { showToast('Error', 'error'); }
 }
 
 
 
-function showToast(msg, type='info') {
+function showToast(msg, type = 'info') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     let icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
-    if(type === 'info') icon = 'fa-circle-info';
-    
+    if (type === 'info') icon = 'fa-circle-info';
+
     toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);

@@ -23,6 +23,9 @@ public class BorrowRecord {
 
     private LocalDate returnDate;
 
+    @org.hibernate.annotations.UpdateTimestamp
+    private java.time.LocalDateTime updatedAt;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Book getBook() { return book; }
@@ -33,4 +36,6 @@ public class BorrowRecord {
     public void setBorrowDate(LocalDate borrowDate) { this.borrowDate = borrowDate; }
     public LocalDate getReturnDate() { return returnDate; }
     public void setReturnDate(LocalDate returnDate) { this.returnDate = returnDate; }
+    public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(java.time.LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

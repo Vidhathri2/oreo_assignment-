@@ -60,8 +60,38 @@ public class MetadataController {
         return ResponseEntity.ok(borrowerRepository.save(borrower));
     }
 
+    @DeleteMapping("/authors/{id}")
+    public ResponseEntity<?> deleteAuthor(@PathVariable Long id) {
+        try {
+            authorRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Cannot delete author because they are associated with existing books."));
+        }
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+        try {
+            categoryRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Cannot delete category because it is associated with existing books."));
+        }
+    }
+
+    @DeleteMapping("/borrowers/{id}")
+    public ResponseEntity<?> deleteBorrower(@PathVariable Long id) {
+        try {
+            borrowerRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Cannot delete borrower because they have existing borrow records."));
+        }
+    }
+
     @GetMapping("/transactions")
     public List<com.assignment.bookmanagement.model.BorrowRecord> getRecentTransactions() {
-        return borrowRecordRepository.findTop10ByOrderByIdDesc();
+        return borrowRecordRepository.findTop10ByOrderByUpdatedAtDesc();
     }
 }
