@@ -171,7 +171,9 @@ function renderBooksTable(booksToRender, tbodyId) {
         const statusClass = book.availableCopies === 0 ? 'status-borrowed' : (book.availableCopies < 2 ? 'status-low' : 'status-available');
         const statusText = book.availableCopies === 0 ? 'Borrowed Out' : (book.availableCopies < 2 ? 'Low Stock' : 'Available');
 
-        const coverUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn}-S.jpg`;
+        const coverUrl = book.title.trim().toLowerCase() === '1984'
+            ? '/images/1984.jpg'
+            : `https://covers.openlibrary.org/b/isbn/${book.isbn}-S.jpg`;
         const avatarUrl = `https://ui-avatars.com/api/?name=${book.author.name.replace(' ', '+')}&background=random&rounded=true`;
 
         const tr = document.createElement('tr');
